@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TOEFL Listen & Repeat 完整合集 | 千里li · Hang in There</title>
+<style>
+:root {
+  --bg: #f8f9fa;
+  --card-bg: #ffffff;
+  --text: #2d3436;
+  --text-secondary: #636e72;
+  --border: #e9ecef;
+  --accent: #0984e3;
+  --accent-light: #d6eaf8;
+  --heading: #1a1a2e;
+  --cat1: #0984e3;
+  --cat2: #00b894;
+  --cat3: #e17055;
+  --cat4: #6c5ce7;
+  --cat5: #fdcb6e;
+  --red: #e74c3c;
+  --green: #27ae60;
+  --orange: #f39c12;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+.container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+
+/* Header */
+.header { text-align: center; padding: 40px 20px 30px; }
+.header h1 { font-size: 2rem; color: var(--heading); margin-bottom: 8px; }
+.header p { color: var(--text-secondary); font-size: 0.95rem; }
+.header .source { margin-top: 8px; font-size: 0.85rem; }
+.header .source a { color: var(--accent); text-decoration: none; }
+
+/* Stats */
+.stats { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; margin-bottom: 30px; }
+.stat-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 16px 24px; text-align: center; min-width: 120px; }
+.stat-num { font-size: 2rem; font-weight: 700; color: var(--accent); }
+.stat-label { font-size: 0.85rem; color: var(--text-secondary); margin-top: 4px; }
+
+/* Category filter */
+.filters { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-bottom: 24px; }
+.filter-btn { padding: 8px 16px; border: 1px solid var(--border); border-radius: 20px; background: var(--card-bg); cursor: pointer; font-size: 0.9rem; transition: all 0.2s; color: var(--text-secondary); }
+.filter-btn:hover, .filter-btn.active { background: var(--accent); color: white; border-color: var(--accent); }
+
+/* Topic Card */
+.topic-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 16px; overflow: hidden; transition: box-shadow 0.2s; }
+.topic-card:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+.topic-header { padding: 16px 20px; cursor: pointer; display: flex; align-items: center; gap: 12px; user-select: none; }
+.topic-header:hover { background: #f8f9fa; }
+.topic-number { background: var(--accent); color: white; min-width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.85rem; flex-shrink: 0; }
+.topic-info { flex: 1; min-width: 0; }
+.topic-title { font-weight: 600; font-size: 1.05rem; color: var(--heading); }
+.topic-date { font-size: 0.8rem; color: var(--text-secondary); margin-top: 2px; }
+.topic-badges { display: flex; gap: 6px; flex-shrink: 0; flex-wrap: wrap; }
+.badge { padding: 3px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: 500; }
+.badge-audio { background: #d4edda; color: #155724; }
+.badge-no-audio { background: #fff3cd; color: #856404; }
+.badge-cat { background: #e8e8ff; color: #4a4ac0; }
+.topic-arrow { color: var(--text-secondary); font-size: 1.2rem; transition: transform 0.2s; flex-shrink: 0; }
+.topic-card.open .topic-arrow { transform: rotate(180deg); }
+
+/* Topic Body */
+.topic-body { display: none; padding: 0 20px 20px; border-top: 1px solid var(--border); }
+.topic-card.open .topic-body { display: block; }
+
+.sentences { margin: 16px 0; }
+.sentence { display: flex; align-items: flex-start; gap: 10px; padding: 8px 0; border-bottom: 1px solid #f1f3f5; }
+.sentence:last-child { border-bottom: none; }
+.sentence-num { background: var(--accent-light); color: var(--accent); min-width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 700; flex-shrink: 0; }
+.sentence-text { font-size: 0.95rem; line-height: 1.5; }
+.sentence-text b { color: var(--heading); }
+
+.vocab-section { margin-top: 16px; }
+.vocab-toggle { font-size: 0.85rem; color: var(--accent); cursor: pointer; font-weight: 500; }
+.vocab-toggle:hover { text-decoration: underline; }
+.vocab-list { display: none; margin-top: 12px; padding: 14px 18px; background: #f8f9fa; border-radius: 8px; }
+.vocab-list.show { display: block; }
+.vocab-item { padding: 4px 0; font-size: 0.85rem; display: flex; gap: 8px; flex-wrap: wrap; }
+.vocab-en { font-weight: 600; color: var(--heading); }
+.vocab-phonetic { color: var(--text-secondary); font-style: italic; }
+.vocab-cn { color: var(--text-secondary); }
+
+/* TTS Button */
+.sentence-tts { background: none; border: 1px solid var(--accent); cursor: pointer; font-size: 0.75rem; padding: 2px 8px; border-radius: 12px; color: var(--accent); transition: all 0.2s; white-space: nowrap; margin-left: 6px; }
+.sentence-tts:hover { background: var(--accent); color: white; }
+.sentence-tts.playing { background: var(--green); color: white; border-color: var(--green); animation: pulse 0.8s infinite; }
+@keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.5; } }
+
+/* Hidden text for blind listening practice */
+.sentence-text-blur { filter: blur(3px); cursor: pointer; user-select: none; background: #f0f0f0; border-radius: 4px; padding: 4px 10px; transition: filter 0.3s; }
+.sentence-text-blur:hover { filter: blur(1.5px); background: #e8e8e8; }
+.sentence-text-blur.revealed { filter: none; cursor: default; background: transparent; padding: 0; }
+.sentence-text-blur::after { content: "👆 点击此处显示文本"; display: block; font-size: 0.8rem; color: #999; text-align: center; }
+.sentence-text-blur.revealed::after { content: none; }
+.sentence-text-blur b { visibility: hidden; }
+.sentence-text-blur.revealed b { visibility: visible; }
+
+.hide-all-btn { display: inline-block; margin: 8px 0 16px; padding: 6px 14px; border: 1px solid #ccc; border-radius: 16px; background: #fff; cursor: pointer; font-size: 0.85rem; color: var(--text-secondary); transition: all 0.2s; }
+.hide-all-btn:hover { background: #f0f0f0; border-color: #999; }
+
+/* Search */
+.search-bar { text-align: center; margin-bottom: 24px; }
+.search-bar input { width: 100%; max-width: 500px; padding: 10px 16px; border: 1px solid var(--border); border-radius: 24px; font-size: 0.95rem; outline: none; transition: border-color 0.2s; }
+.search-bar input:focus { border-color: var(--accent); }
+.no-results { text-align: center; color: var(--text-secondary); padding: 40px; display: none; }
+.no-results.show { display: block; }
+
+/* Footer */
+.footer { text-align: center; padding: 40px 20px; color: var(--text-secondary); font-size: 0.85rem; }
+.footer a { color: var(--accent); text-decoration: none; }
+
+@media (max-width: 640px) {
+  .header h1 { font-size: 1.5rem; }
+  .stats { gap: 8px; }
+  .stat-card { padding: 12px 16px; min-width: 80px; }
+  .stat-num { font-size: 1.5rem; }
+  .topic-header { padding: 12px 16px; }
+  .topic-body { padding: 0 12px 16px; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="header">
+  <h1>🗣️ TOEFL Listen &amp; Repeat 完整合集</h1>
+  <p>来源：公众号「千里li · Hang in There」 | 持续更新中</p>
+  <p class="source">托福口语 Listen &amp; Repeat 盲听跟读训练合集</p>
+</div>
+
+<div class="stats" id="stats">
+  <div class="stat-card"><div class="stat-num" id="count-all">-</div><div class="stat-label">总计话题</div></div>
+  <div class="stat-card"><div class="stat-num" id="count-audio">-</div><div class="stat-label">有音频</div></div>
+  <div class="stat-card"><div class="stat-num" id="count-text">-</div><div class="stat-label">仅文字</div></div>
+  <div class="stat-card"><div class="stat-num" id="count-sentences">-</div><div class="stat-label">总句数</div></div>
+</div>
+
+<div class="search-bar">
+  <input type="text" id="searchBox" placeholder="🔍 搜索话题、句子或词汇..." oninput="filterTopics()">
+</div>
+<div class="no-results" id="noResults">没有匹配的结果</div>
+
+<div class="filters">
+  <button class="filter-btn active" onclick="filterByCat('all', this)">全部</button>
+  <button class="filter-btn" onclick="filterByCat('cat1', this)">🏫 校园行政办事</button>
+  <button class="filter-btn" onclick="filterByCat('cat2', this)">🌿 手工园艺户外</button>
+  <button class="filter-btn" onclick="filterByCat('cat3', this)">🍳 美食制作类</button>
+  <button class="filter-btn" onclick="filterByCat('cat4', this)">🎨 装修绘画艺术</button>
+  <button class="filter-btn" onclick="filterByCat('cat5', this)">🏪 商业休闲</button>
+</div>
+
+<div id="topicList"></div>
+
+<div class="footer">
+  <p>整理自 TOEFL 口语真题 · Listen &amp; Repeat 盲听跟读训练 | 仅供学习参考</p>
+</div>
+
+</div>
+
+<script>
+// ===== DATA =====
+// Categories: cat1=校园行政办事, cat2=手工园艺户外, cat3=美食制作, cat4=装修绘画艺术, cat5=商业休闲
+const topics = [
+// ===== 一、校园行政办事类 =====
+{
+  id: 1, cat: "cat1", title: "Gym 健身房", date: "2026-03-21", hasAudio: true, audioUrl: "https://hanginthere.cn/audio/speaking/gym.m4a", segments: [
+    {t:0,e:4},{t:4,e:9},{t:9,e:16},{t:16,e:22},{t:22,e:28},{t:28,e:34},{t:34,e:39}
+  ],
+  sentences: [
+    "The gym offers a <b>variety</b> of <b>fitness</b> <b>programs</b> throughout the week.",
+    "Please <b>wipe down</b> the <b>equipment</b> after each use.",
+    "The weight room is <b>located</b> on the <b>ground floor</b> near the <b>locker rooms</b>.",
+    "You must <b>scan</b> your student ID to <b>access</b> the <b>facility</b>.",
+    "Group <b>classes</b> such as yoga and <b>spinning</b> are available daily.",
+    "<b>Proper</b> <b>attire</b>, including <b>athletic</b> shoes, is <b>required</b> at all times.",
+    "For <b>safety</b> <b>reasons</b>, do not use any machine without proper <b>instruction</b>."
+  ],
+  vocab: [["variety","/vəˈraɪəti/","多样性"],["fitness programs","/ˈfɪtnəs ˈproʊɡræmz/","健身课程"],["wipe down","/waɪp daʊn/","擦拭干净"],["equipment","/ɪˈkwɪpmənt/","器材"],["ground floor","/ɡraʊnd flɔːr/","一楼"],["locker rooms","/ˈlɑːkər ruːmz/","更衣室"],["scan","/skæn/","扫描"],["facility","/fəˈsɪləti/","设施"],["spinning","/ˈspɪnɪŋ/","动感单车"],["attire","/əˈtaɪər/","着装"],["athletic shoes","/æθˈletɪk ʃuːz/","运动鞋"],["safety reasons","/ˈseɪfti ˈriːzənz/","安全原因"],["instruction","/ɪnˈstrʌkʃn/","指导"]]
+},
+{
+  id: 3, cat: "cat1", title: "Library 图书馆", date: "2026-03-21", hasAudio: true, audioUrl: "https://hanginthere.cn/audio/speaking/library.m4a", segments: [
+    {t:0,e:5},{t:5,e:11},{t:11,e:18},{t:18,e:25},{t:25,e:31},{t:31,e:37},{t:37,e:42}
+  ],
+  sentences: [
+    "Your library card <b>grants</b> you <b>access</b> to all <b>on-campus</b> libraries.",
+    "Books can be <b>checked out</b> for up to <b>three weeks</b> at a time.",
+    "<b>Reference</b> materials must be used <b>within</b> the library only.",
+    "Please keep your <b>voice down</b> and <b>refrain</b> from using your phone.",
+    "The <b>computer lab</b> is available for <b>research purposes</b> and printing.",
+    "You can <b>reserve</b> a <b>study room</b> online up to one week in <b>advance</b>.",
+    "<b>Renewals</b> can be done online or at the <b>circulation desk</b>."
+  ],
+  vocab: [["grants access","/ɡrænts ˈækses/","授予访问权限"],["on-campus","/ɑːn ˈkæmpəs/","校内的"],["check out","/tʃek aʊt/","借出"],["three weeks","/θriː wiːks/","三周"],["reference","/ˈrefrəns/","参考"],["within","/wɪˈðɪn/","在...之内"],["refrain","/rɪˈfreɪn/","克制"],["research purposes","/rɪˈsɜːrtʃ ˈpɜːrpəsɪz/","研究目的"],["reserve","/rɪˈzɜːrv/","预约"],["study room","/ˈstʌdi ruːm/","自习室"],["in advance","/ɪn ədˈvæns/","提前"],["renewal","/rɪˈnjuːəl/","续借"],["circulation desk","/ˌsɜːrkjəˈleɪʃn desk/","借阅台"]]
+},
+{
+  id: 4, cat: "cat1", title: "Campus Tour 校园参观", date: "2026-03-21", hasAudio: true, audioUrl: "https://hanginthere.cn/audio/speaking/campus-tour.m4a", segments: [
+    {t:0,e:5},{t:5,e:11},{t:11,e:17},{t:17,e:23},{t:23,e:29},{t:29,e:35},{t:35,e:40}
+  ],
+  sentences: [
+    "Welcome to our campus! I'll be your <b>tour guide</b> today.",
+    "The <b>main administration building</b> is <b>directly</b> ahead of us.",
+    "Our <b>student center</b> offers dining options, a <b>bookstore</b>, and <b>lounge areas</b>.",
+    "The <b>science complex</b> houses <b>state-of-the-art</b> <b>laboratories</b>.",
+    "<b>Residence halls</b> are located on the east side of campus.",
+    "The <b>athletic complex</b> features a <b>swimming pool</b>, courts, and a track.",
+    "Feel free to <b>explore</b> on your own after the tour <b>concludes</b>."
+  ],
+  vocab: [["tour guide","/tʊr ɡaɪd/","导游"],["main administration building","/meɪn ədˌmɪnɪˈstreɪʃn ˈbɪldɪŋ/","行政楼"],["directly","/dəˈrektli/","直接地"],["student center","/ˈstuːdnt ˈsentər/","学生活动中心"],["bookstore","/ˈbʊkstɔːr/","书店"],["lounge areas","/laʊndʒ ˈeriəz/","休息区"],["science complex","/ˈsaɪəns ˈkɑːmpleks/","科学楼"],["state-of-the-art","/steɪt əv ði ɑːrt/","先进的"],["laboratory","/ˈlæbrətɔːri/","实验室"],["residence halls","/ˈrezɪdəns hɔːlz/","宿舍楼"],["athletic complex","/æθˈletɪk ˈkɑːmpleks/","体育中心"],["swimming pool","/ˈswɪmɪŋ puːl/","游泳池"],["explore","/ɪkˈsplɔːr/","探索"],["conclude","/kənˈkluːd/","结束"]]
+},
+{
+  id: 5, cat: "cat1", title: "Course System 选课系统", date: "2026-03-21", hasAudio: true, audioUrl: "https://hanginthere.cn/audio/speaking/course-system.m4a", segments: [
+    {t:0,e:5},{t:5,e:10},{t:10,e:16},{t:16,e:22},{t:22,e:28},{t:28,e:34},{t:34,e:39}
+  ],
+  sentences: [
+    "Log into the <b>student portal</b> using your <b>credentials</b>.",
+    "<b>Navigate</b> to the <b>course registration</b> <b>section</b>.",
+    "Use the <b>search filters</b> to find courses by <b>department</b> or <b>time slot</b>.",
+    "Check the <b>prerequisites</b> before <b>enrolling</b> in any <b>advanced</b> course.",
+    "Add your selected courses to the <b>shopping cart</b> and <b>proceed</b> to <b>checkout</b>.",
+    "<b>Review</b> your <b>schedule</b> to avoid <b>time conflicts</b>.",
+    "If a course is full, you can join the <b>waitlist</b>."
+  ],
+  vocab: [["student portal","/ˈstuːdnt ˈpɔːrtl/","学生门户"],["credentials","/krəˈdenʃlz/","登录凭据"],["navigate","/ˈnævɪɡeɪt/","导航"],["course registration","/kɔːrs ˌredʒɪˈstreɪʃn/","课程注册"],["section","/ˈsekʃn/","板块"],["search filter","/sɜːrtʃ ˈfɪltər/","搜索筛选"],["department","/dɪˈpɑːrtmənt/","院系"],["time slot","/taɪm slɑːt/","时间段"],["prerequisite","/ˌpriːˈrekwəzɪt/","先修课程"],["enroll","/ɪnˈroʊl/","注册"],["advanced","/ədˈvænst/","高级的"],["shopping cart","/ˈʃɑːpɪŋ kɑːrt/","选课篮"],["proceed to checkout","/prəˈsiːd tə ˈtʃekaʊt/","确认提交"],["review","/rɪˈvjuː/","检查"],["schedule","/ˈskedʒuːl/","课表"],["time conflict","/taɪm ˈkɑːnflɪkt/","时间冲突"],["waitlist","/ˈweɪtlɪst/","候补名单"]]
+},
+{
+  id: 18, cat: "cat1", title: "Email System 邮件系统", date: "2026-01-21 (首考)", hasAudio: true, audioUrl: null,
+  sentences: [
+    "Check your <b>inbox</b> for new messages.",
+    "Select \"compose\" to write your email.",
+    "Select from your <b>contacts list</b> to <b>add recipients</b> to your note.",
+    "Review <b>sent items</b> to confirm your messages were <b>delivered</b>.",
+    "Use <b>folders</b> to <b>organize your correspondence</b> efficiently.",
+    "Set up a few <b>topical filters</b> to <b>manage incoming communications</b>.",
+    "To be safe, remember to <b>log out</b> to keep your <b>electronic mail</b> secure in our system."
+  ],
+  vocab: [["inbox","/ˈɪnbɑːks/","收件箱"],["compose","/kəmˈpoʊz/","撰写（邮件）"],["contacts list","/ˈkɑːntækts lɪst/","联系人列表"],["add recipients","/æd rɪˈsɪpiənts/","添加收件人"],["sent items","/sent ˈaɪtəmz/","已发送邮件"],["delivered","/dɪˈlɪvərd/","已送达"],["folders","/ˈfoʊldərz/","文件夹"],["organize your correspondence","/ˈɔːrɡənaɪz jɔːr ˌkɔːrəˈspɑːndəns/","整理往来邮件"],["topical filters","/ˈtɑːpɪkl ˈfɪltərz/","主题过滤器"],["log out","/lɔːɡ aʊt/","退出登录"],["electronic mail","/ɪlekˈtrɑːnɪk meɪl/","电子邮件"]]
+},
+{
+  id: 19, cat: "cat1", title: "Printing Services 打印服务", date: "2026-01-21 (首考)", hasAudio: true, audioUrl: null,
+  sentences: [
+    "Welcome to the <b>Help Desk</b>.",
+    "First, select the <b>printer</b> from your computer.",
+    "Check the <b>paper tray supply</b> before you start.",
+    "You can use your <b>student ID</b> for any other services.",
+    "You can pay at the <b>payment kiosk</b> if you prefer that method.",
+    "The help desk is available if you need <b>assistance</b>.",
+    "When you are ready, simply select Print from your computer and <b>retrieve your document</b>."
+  ],
+  vocab: [["help desk","/help desk/","服务台"],["printer","/ˈprɪntər/","打印机"],["paper tray","/ˈpeɪpər treɪ/","纸盒；进纸托盘"],["supply","/səˈplaɪ/","耗材"],["student ID","/ˈstuːdənt aɪˈdiː/","学生证"],["payment kiosk","/ˈpeɪmənt ˈkiːɑːsk/","自助缴费机"],["assistance","/əˈsɪstəns/","协助"],["retrieve your document","/rɪˈtriːv jɔːr ˈdɑːkjumənt/","取打印文件"]]
+},
+{
+  id: 20, cat: "cat1", title: "Art Exhibition 艺术展览", date: "2026-05 (家考)", hasAudio: true, audioUrl: null,
+  sentences: [
+    "<b>Artwork</b> can be seen in the <b>east wing</b>.",
+    "Pieces are placed along the <b>main corridor</b>.",
+    "<b>Interactive displays</b> are set up near the <b>front entrance</b>.",
+    "Pick up <b>printed materials</b> at the <b>information desk</b>.",
+    "<b>Incredible photos</b> tell unique stories about <b>campus life</b>.",
+    "If you need to relax for a moment, there are places to sit and <b>take a break</b>.",
+    "Tours are given daily every hour, but you need to <b>sign up</b> <b>one day prior</b>."
+  ],
+  vocab: [["artwork","/ˈɑːtwɜːk/","艺术品"],["east wing","/iːst wɪŋ/","东翼"],["main corridor","/meɪn ˈkɒrɪdɔː(r)/","主走廊"],["interactive displays","/ˌɪntərˈæktɪv dɪˈspleɪz/","互动展示"],["front entrance","/frʌnt ˈentrəns/","正门"],["printed materials","/ˈprɪntɪd məˈtɪəriəlz/","印刷品"],["information desk","/ˌɪnfəˈmeɪʃn desk/","咨询台"],["incredible photos","/ɪnˈkredəbl ˈfəʊtəʊz/","精美照片"],["campus life","/ˈkæmpəs laɪf/","校园生活"],["take a break","/teɪk ə breɪk/","休息片刻"],["sign up","/saɪn ʌp/","报名"],["one day prior","/wʌn deɪ ˈpraɪə(r)/","提前一天"]]
+},
+{
+  id: 21, cat: "cat1", title: "Course Registration 课程注册", date: "2026-05-09", hasAudio: true, audioUrl: null,
+  sentences: [
+    "It's time to begin <b>course registration</b>.",
+    "First, please click on the <b>course catalog</b>.",
+    "Update your <b>student profile</b> information in the system.",
+    "You can then check your <b>timetable</b> to avoid <b>scheduling conflicts</b>.",
+    "To enroll in a class, select the <b>registration button</b>.",
+    "Be sure to review your schedule before your classes <b>officially start</b>.",
+    "If you have questions, please <b>refer to</b> the <b>help section</b> for quick and easy answers."
+  ],
+  vocab: [["course registration","/kɔːs ˌredʒɪˈstreɪʃn/","课程注册"],["course catalog","/kɔːs ˈkætəlɔːɡ/","课程目录"],["student profile","/ˈstjuːdnt ˈprəʊfaɪl/","学生档案"],["timetable","/ˈtaɪmteɪbl/","课程表"],["scheduling conflict","/ˈskedʒuːlɪŋ ˈkɒnflɪkt/","时间冲突"],["enroll in a class","/ɪnˈrəʊl ɪn ə klɑːs/","选课"],["registration button","/ˌredʒɪˈstreɪʃn ˈbʌtn/","注册按钮"],["officially start","/əˈfɪʃəli stɑːt/","正式开始"],["refer to","/rɪˈfɜː tuː/","查阅"],["help section","/help ˈsekʃn/","帮助专区"]]
+},
+{
+  id: 22, cat: "cat1", title: "Presentation Prep Guidelines 课堂展示准备指南", date: "2026-05-09", hasAudio: true, audioUrl: null,
+  sentences: [
+    "Start by setting up the <b>projector screen</b>.",
+    "Use the <b>whiteboard</b> to highlight <b>key points</b>.",
+    "Arrange your <b>project materials</b> neatly on the tables.",
+    "Check all the <b>equipment</b> to ensure it works properly.",
+    "Make sure your computer <b>is set up with</b> your presentation.",
+    "It's a good idea to practice <b>delivering your speech</b> in front of some friends.",
+    "Take time to <b>review your notes</b> thoroughly so you'll feel <b>confident and prepared</b>."
+  ],
+  vocab: [["internship","/ˈɪntɜːnʃɪp/","实习"],["supervisor","/ˈsuːpəvaɪzə(r)/","指导老师"],["project presentation","/ˈprɒdʒekt ˌpreznˈteɪʃn/","项目展示"],["projector screen","/prəˈdʒektə skriːn/","投影幕布"],["whiteboard","/ˈwaɪtbɔːd/","白板"],["key points","/kiː pɔɪnts/","要点"],["project materials","/ˈprɒdʒekt məˈtɪəriəlz/","项目材料"],["equipment","/ɪˈkwɪpmənt/","设备"],["deliver your speech","/dɪˈlɪvə jɔː(r) spiːtʃ/","发表演讲"],["review your notes","/rɪˈvjuː jɔː(r) nəʊts/","梳理讲稿"],["confident and prepared","/ˈkɒnfɪdənt ənd prɪˈpeəd/","自信准备充分"]]
+},
+{
+  id: 23, cat: "cat1", title: "Campus Coffee Shop 校园咖啡店", date: "2026-04-29 / 05-16", hasAudio: false, audioUrl: null,
+  sentences: [
+    "Welcome to our <b>campus</b> coffee shop.",
+    "We offer a <b>wide selection</b> of hot and cold <b>beverages</b>.",
+    "Our <b>specialty drinks</b> change <b>seasonally</b>.",
+    "You can <b>customize</b> your drink with different <b>milk options</b>.",
+    "<b>Pastries</b> and <b>snacks</b> are available at the <b>counter</b>.",
+    "We accept both <b>cash</b> and <b>student meal plans</b>.",
+    "Please <b>dispose of</b> your <b>trash</b> in the <b>designated bins</b> before leaving."
+  ],
+  vocab: [["wide selection","/waɪd sɪˈlekʃn/","广泛选择"],["beverage","/ˈbevərɪdʒ/","饮品"],["specialty drinks","/ˈspeʃəlti drɪŋks/","招牌饮品"],["seasonally","/ˈsiːzənəli/","按季节"],["customize","/ˈkʌstəmaɪz/","个性化定制"],["milk options","/mɪlk ˈɑːpʃnz/","奶品选择"],["pastry","/ˈpeɪstri/","糕点"],["snacks","/snæks/","小吃"],["counter","/ˈkaʊntər/","柜台"],["cash","/kæʃ/","现金"],["student meal plan","/ˈstuːdnt miːl plæn/","学生用餐计划"],["dispose of","/dɪˈspoʊz əv/","处理"],["trash","/træʃ/","垃圾"],["designated bins","/ˈdezɪɡneɪtɪd bɪnz/","指定垃圾桶"]]
+},
+{
+  id: 30, cat: "cat1", title: "University Cultural Festival 大学文化节", date: "2026-06-02", hasAudio: true, audioUrl: null,
+  sentences: [
+    "Dance acts are featured throughout the day.",
+    "Try different <b>cuisines</b> from around the world.",
+    "Discover creative works by <b>international artists</b>.",
+    "Join a session to learn about <b>various traditions</b> <b>firsthand</b>.",
+    "Friendly <b>staff</b> are ready to answer any questions you might have.",
+    "Use the map to find a <b>specific event</b> or to help you <b>prioritize</b>.",
+    "For a deeper look at the <b>exhibit</b>, join a walk led by a <b>certified guide</b>."
+  ],
+  vocab: [["cultural festival","/ˈkʌltʃərəl ˈfestɪvl/","文化节"],["dance act","/dæns ækt/","舞蹈表演"],["cuisine","/kwɪˈziːn/","菜系"],["international artist","/ˌɪntərˈnæʃnəl ˈɑːrtɪst/","国际艺术家"],["various traditions","/ˈveriəs trəˈdɪʃnz/","各种传统"],["firsthand","/ˌfɜːrstˈhænd/","亲身地"],["staff","/stæf/","工作人员"],["specific event","/spəˈsɪfɪk ɪˈvent/","特定活动"],["prioritize","/praɪˈɔːrətaɪz/","确定优先顺序"],["exhibit","/ɪɡˈzɪbɪt/","展览"],["certified guide","/ˈsɜːrtɪfaɪd ɡaɪd/","持证导览员"]]
+},
+{
+  id: 32, cat: "cat1", title: "City Tour 城市导览", date: "2026-06-07", hasAudio: true, audioUrl: null,
+  sentences: [
+    "This <b>castle</b> is famous for its <b>towers</b>.",
+    "The <b>statue</b> <b>celebrates important events</b>.",
+    "Visit the market to buy <b>local goods</b> and <b>fresh produce</b>.",
+    "The park is perfect for relaxing and <b>outdoor activities</b>.",
+    "See <b>art displays</b> and <b>historical relics</b> at the museum.",
+    "<b>Guided city tours</b> can provide detailed information about each <b>landmark</b>.",
+    "When needed, check out the city map for directions and <b>transportation options</b>."
+  ],
+  vocab: [["city landmark","/ˈsɪti ˈlændmɑːrk/","城市地标"],["castle","/ˈkæsl/","城堡"],["tower","/ˈtaʊər/","塔楼"],["statue","/ˈstætʃuː/","雕像"],["local goods","/ˈloʊkl ɡʊdz/","当地商品"],["fresh produce","/freʃ ˈproʊduːs/","新鲜农产品"],["outdoor activities","/ˈaʊtdɔːr ækˈtɪvətiz/","户外活动"],["art display","/ɑːrt dɪˈspleɪ/","艺术展览"],["historical relic","/hɪˈstɔːrɪkl ˈrelɪk/","历史文物"],["guided city tour","/ˈɡaɪdɪd ˈsɪti tʊr/","城市导览"],["detailed information","/ˈdiːteɪld ˌɪnfərˈmeɪʃn/","详细信息"],["transportation options","/ˌtrænspərˈteɪʃn ˈɑːpʃnz/","交通方式"]]
+},
+{
+  id: 38, cat: "cat1", title: "Career Fair 招聘会", date: "2026-06-25", hasAudio: false, audioUrl: null,
+  sentences: [
+    "Be sure to <b>sign in</b> when you first arrive.",
+    "Free <b>refreshments</b> are <b>available</b> <b>all day</b>.",
+    "When you <b>check in</b>, <b>pick up</b> a <b>printed schedule</b> and a <b>site map</b>.",
+    "We'll be <b>hosting</b> <b>presentations</b> on <b>resume writing</b> at noon.",
+    "If <b>attendees</b> need a <b>quiet meeting area</b>, it's <b>upstairs</b>.",
+    "Computers are available to <b>connect with</b> <b>company representatives</b>.",
+    "You should <b>monitor</b> your email <b>closely</b> for <b>messages</b> from <b>employers</b>."
+  ],
+  vocab: [["sign in","/ˌsaɪn ˈɪn/","登记；签到"],["refreshments","/rɪˈfreʃmənts/","茶点；饮料和小食"],["available","/əˈveɪləbəl/","可获得的；可使用的"],["all day","/ɔːl deɪ/","全天"],["check in","/ˌtʃek ˈɪn/","办理签到；报到"],["pick up","/ˌpɪk ˈʌp/","领取；拿取"],["printed schedule","/ˈprɪntɪd ˈskedʒuːl/","纸质日程表"],["site map","/saɪt mæp/","场地地图；会场地图"],["host","/hoʊst/","举办；主持"],["presentation","/ˌprezənˈteɪʃən/","讲座；演讲；展示"],["resume writing","/ˈrezəmeɪ ˈraɪtɪŋ/","简历写作"],["attendee","/əˌtenˈdiː/","参会者；参加者"],["quiet meeting area","/ˌkwaɪət ˈmiːtɪŋ ˈeriə/","安静洽谈区"],["upstairs","/ˌʌpˈsterz/","在楼上"],["connect with","/kəˈnekt wɪð/","与……联系"],["company representative","/ˈkʌmpəni ˌreprɪˈzentətɪv/","公司代表"],["monitor","/ˈmɑːnɪtər/","密切关注；留意"],["closely","/ˈkloʊsli/","密切地"],["message","/ˈmesɪdʒ/","消息；通知"],["employer","/ɪmˈplɔɪər/","雇主；招聘单位"]]
+},
+
+// ===== 二、手工园艺户外劳作类 =====
+{
+  id: 2, cat: "cat2", title: "Wood Shop 木工坊", date: "2026-03-21", hasAudio: true, audioUrl: "https://hanginthere.cn/audio/speaking/wood-shop.m4a", segments: [
+    {t:0,e:5},{t:5,e:11},{t:11,e:18},{t:18,e:24},{t:24,e:30},{t:30,e:36},{t:36,e:41}
+  ],
+  sentences: [
+    "Always wear <b>safety goggles</b> and <b>ear protection</b> in the workshop.",
+    "<b>Measure twice</b> and <b>cut once</b> to avoid wasting <b>materials</b>.",
+    "Use the <b>saw</b> <b>carefully</b> and follow the <b>guidelines</b>.",
+    "<b>Sand</b> the surface of the wood until it is <b>smooth</b>.",
+    "<b>Apply</b> a coat of <b>varnish</b> to <b>protect</b> the wood.",
+    "Keep your <b>workstation</b> clean and free of <b>clutter</b>.",
+    "Return all tools to their <b>designated</b> spots when finished."
+  ],
+  vocab: [["safety goggles","/ˈseɪfti ˈɡɑːɡlz/","护目镜"],["ear protection","/ɪr prəˈtekʃn/","耳罩"],["measure twice, cut once","量两次，裁一次"],["materials","/məˈtɪriəlz/","材料"],["saw","/sɔː/","锯子"],["carefully","/ˈkerfəli/","小心地"],["guideline","/ˈɡaɪdlaɪn/","指导线"],["sand","/sænd/","打磨"],["smooth","/smuːð/","光滑"],["apply a coat of varnish","/əˈplaɪ ə koʊt əv ˈvɑːrnɪʃ/","涂一层清漆"],["workstation","/ˈwɜːrksteɪʃn/","工作台"],["clutter","/ˈklʌtər/","杂物"],["designated","/ˈdezɪɡneɪtɪd/","指定的"]]
+},
+{
+  id: 8, cat: "cat2", title: "Garden 园艺（4月11日）", date: "2026-04-11", hasAudio: true, audioUrl: null,
+  sentences: [
+    "You can use these tools for <b>gardening</b>.",
+    "Please water the plants with a <b>hose</b>.",
+    "Some plants grow better in <b>compost-rich soil</b>.",
+    "The <b>gardener</b> will show how to <b>trim</b> and <b>maintain</b> plants.",
+    "<b>Fertilizer</b> helps improve plant growth and soil quality.",
+    "Be careful when using tools near <b>delicate</b> plant roots to avoid causing <b>damage</b>.",
+    "Check the <b>labels</b> carefully to identify different plant <b>species</b> and their <b>specific growing conditions</b>."
+  ],
+  vocab: [["hose","/həʊz/","橡胶水管"],["compost-rich soil","/ˈkɑːmpoʊst rɪtʃ sɔɪl/","富含堆肥的土壤"],["gardener","/ˈɡɑːdnə(r)/","园丁"],["trim","/trɪm/","修剪"],["maintain","/meɪnˈteɪn/","养护"],["fertilizer","/ˈfɜːtəlaɪzə(r)/","肥料"],["delicate","/ˈdelɪkət/","脆弱的"],["damage","/ˈdæmɪdʒ/","损害"],["label","/ˈleɪbl/","标签"],["species","/ˈspiːʃiːz/","物种"],["specific growing condition","/spəˈsɪfɪk ˈɡrəʊɪŋ kənˈdɪʃn/","特定生长条件"]]
+},
+{
+  id: "23b", cat: "cat2", title: "Garden Working 园艺工作（5月9日）", date: "2026-05-09", hasAudio: true, audioUrl: null,
+  sentences: [
+    "Water the trees daily to help them grow.",
+    "Add <b>nutrients</b> to the <b>flower bed</b> dirt.",
+    "Manage temperature and <b>humidity</b> inside the <b>greenhouse</b>.",
+    "Do not use <b>chemicals</b> near the pond to protect the <b>creatures</b> there.",
+    "Recycle waste in the <b>compost pile</b> to create rich soil.",
+    "After you finish <b>gardening</b>, put the tools in the <b>shed</b> so others can use them.",
+    "When guests arrive, show them to the <b>visitor center</b> to learn about the garden."
+  ],
+  vocab: [["greenhouse","/ˈɡriːnhaʊs/","温室"],["nutrient","/ˈnjuːtriənt/","养分"],["flower bed","/ˈflaʊə bed/","花坛"],["humidity","/hjuːˈmɪdəti/","湿度"],["compost pile","/ˈkɒmpɒst paɪl/","堆肥堆"],["chemical","/ˈkemɪkl/","化学药剂"],["creature","/ˈkriːtʃə(r)/","生物"],["shed","/ʃed/","工具棚"],["visitor center","/ˈvɪzɪtə ˈsentə(r)/","游客中心"],["gardening","/ˈɡɑːdnɪŋ/","园艺劳作"]]
+},
+{
+  id: 13, cat: "cat2", title: "Birdwatching 观鸟", date: "2026-04-18", hasAudio: false, audioUrl: null,
+  sentences: [
+    "Look toward the <b>treetops</b> where you can find <b>nests</b>.",
+    "Note details to help identify the <b>bird</b>.",
+    "Keep a record of <b>each sighting</b> to share with the <b>group</b> later.",
+    "Wear <b>proper footwear</b> to keep from <b>slipping</b> while exploring outdoors.",
+    "Keep your head covered to protect yourself from the <b>sun</b> on your walk.",
+    "When getting ready for a day out, be sure to pack essentials to be prepared.",
+    "If you <b>spot</b> a bird nearby, <b>avoid sudden movements</b> so it does not fly away."
+  ],
+  vocab: [["treetops","/ˈtriːtɑːps/","树梢"],["nests","/nests/","鸟巢"],["keep a record of","/kiːp ə ˈrekərd əv/","记录"],["proper footwear","/ˈprɑːpər ˈfʊtwer/","合适的鞋"],["slipping","/ˈslɪpɪŋ/","滑倒"],["spot","/spɑːt/","发现"],["avoid sudden movements","/əˈvɔɪd ˈsʌdn ˈmuːvmənts/","避免突然动作"]]
+},
+{
+  id: 11, cat: "cat2", title: "Bicycle Repair 修理自行车", date: "2026-04-18", hasAudio: false, audioUrl: null,
+  sentences: [
+    "First, select the right tool to <b>remove the wheel</b>.",
+    "Next, <b>deflate the tire</b> completely.",
+    "Carefully <b>locate the puncture hole</b> and <b>mark it with a pin</b>.",
+    "Select a <b>patch</b> from the <b>repair kit</b> and apply it <b>firmly</b>.",
+    "Use the <b>pump</b> to <b>inflate</b> the tire to the <b>correct pressure</b>.",
+    "Check for <b>additional leaks</b> by <b>submerging the tube</b> in a bucket of water.",
+    "If there are no new problems, <b>reattach the wheel</b> back to the bicycle."
+  ],
+  vocab: [["remove the wheel","拆卸车轮"],["deflate the tire","/dɪˈfleɪt ðə ˈtaɪər/","给轮胎放气"],["puncture hole","/ˈpʌŋktʃər hoʊl/","破洞"],["mark with a pin","用针标记"],["repair kit","/rɪˈper kɪt/","修补工具包"],["apply a patch","/əˈplaɪ ə pætʃ/","贴补胎片"],["firmly","/ˈfɜːrmli/","牢固地"],["pump","/pʌmp/","打气筒"],["inflate","/ɪnˈfleɪt/","充气"],["correct pressure","/kəˈrekt ˈpreʃər/","标准气压"],["submerge the tube","/səbˈmɜːrdʒ ðə tuːb/","浸入内胎"],["reattach the wheel","重新安装车轮"]]
+},
+{
+  id: 12, cat: "cat2", title: "Sewing Buttons 缝扣子", date: "2026-04-18", hasAudio: false, audioUrl: null,
+  sentences: [
+    "First, <b>thread a needle</b> and <b>tie a knot</b>.",
+    "Position the button on the <b>fabric</b>.",
+    "Push the needle gently through fabric and button.",
+    "<b>Sew</b> tightly through each of holes between 3 and 5 times.",
+    "Tie a strong knot at back to firmly secure your work.",
+    "Cut any extra thread, then repeat same steps if there are other buttons.",
+    "If your fingers are sensitive, <b>use a thimble</b> for protection while sewing."
+  ],
+  vocab: [["thread a needle","/θred ə ˈniːdl/","穿针"],["tie a knot","/taɪ ə nɑːt/","打结"],["fabric","/ˈfæbrɪk/","布料"],["push the needle through","把针穿过去"],["sew","/soʊ/","缝"],["cut excess thread","剪掉多余的线"],["use a thimble","/juːz ə ˈθɪmbl/","戴顶针"]]
+},
+{
+  id: 24, cat: "cat2", title: "Garbage Sorting 垃圾分类", date: "2026-05-16", hasAudio: true, audioUrl: null,
+  sentences: [
+    "Put all <b>paper items</b> into the <b>blue bin</b>.",
+    "<b>Glass bottles</b> belong in the <b>green container</b>.",
+    "The yellow <b>receptacle</b> is only for <b>plastic bottles</b>.",
+    "<b>Non-recyclable materials</b> must go into the <b>trash</b>.",
+    "<b>Compost leftover food</b> to help reduce the waste in <b>landfills</b>.",
+    "Always read the <b>posted signs</b> to make sure you <b>sort</b> all items correctly.",
+    "You can download our app for <b>updates</b> about policy or <b>procedure changes</b>."
+  ],
+  vocab: [["paper items","/ˈpeɪpər ˈaɪtəmz/","纸类物品"],["blue bin","/bluː bɪn/","蓝色回收桶"],["glass bottles","/ɡlæs ˈbɑːtlz/","玻璃瓶"],["green container","/ɡriːn kənˈteɪnər/","绿色容器"],["receptacle","/rɪˈseptəkəl/","容器"],["plastic bottles","/ˈplæstɪk ˈbɑːtlz/","塑料瓶"],["non-recyclable","/ˌnɑːn riːˈsaɪkləbəl/","不可回收的"],["trash","/træʃ/","垃圾"],["compost","/ˈkɑːmpoʊst/","堆肥"],["leftover food","/ˈleftˌoʊvər fuːd/","剩余食物"],["landfill","/ˈlændfɪl/","垃圾填埋场"],["posted signs","/ˈpoʊstɪd saɪnz/","张贴标识"],["sort","/sɔːrt/","分类"],["updates","/ˈʌpdeɪts/","更新"],["procedure changes","/prəˈsiːdʒər ˈtʃeɪndʒɪz/","流程变更"]]
+},
+{
+  id: 25, cat: "cat2", title: "Studio Equipment Training 媒体设备培训", date: "2026-05-20", hasAudio: true, audioUrl: null,
+  sentences: [
+    "Set the camera to record video.",
+    "A <b>lighting rig</b> <b>eliminates shadows</b>.",
+    "Position the <b>microphone</b> for <b>clear audio capture</b>.",
+    "Edit your photos easily using the latest <b>advanced software</b>.",
+    "The <b>green screen</b> can help you create any background you want.",
+    "The <b>master control panel</b> is used to manage all studio equipment.",
+    "If you need to record with no outside noise, you should use the <b>soundproof room</b>."
+  ],
+  vocab: [["set the camera","/set ðə ˈkæmərə/","调试摄像机"],["record video","/rɪˈkɔːd ˈvɪdiəʊ/","录制视频"],["lighting rig","/ˈlaɪtɪŋ rɪɡ/","照明设备"],["eliminate shadows","/ɪˈlɪmɪneɪt ˈʃædəʊz/","消除阴影"],["microphone","/ˈmaɪkrəfəʊn/","麦克风"],["clear audio capture","/klɪə ˈɔːdiəʊ ˈkæptʃə(r)/","清晰收音"],["advanced software","/ədˈvɑːnst ˈsɒftweə(r)/","高级软件"],["green screen","/ɡriːn skriːn/","绿幕"],["master control panel","/ˈmɑːstə kənˈtrəʊl ˈpænl/","主控面板"],["studio equipment","/ˈstjuːdiəʊ ɪˈkwɪpmənt/","演播室设备"],["soundproof room","/ˈsaʊndpruːf ruːm/","隔音室"]]
+},
+{
+  id: 41, cat: "cat2", title: "Gardening 园艺工作（6月27日考到）", date: "2026-06-27", hasAudio: false, audioUrl: null,
+  sentences: [
+    "The <b>greenhouse</b> is where we <b>grow seedlings</b>.",
+    "Please place all <b>food scraps</b> in the <b>compost bin</b>.",
+    "<b>Gardening tools</b> like <b>shovels</b> and <b>gloves</b> can be found in the <b>shed</b>.",
+    "The <b>raised beds</b> need to be <b>weeded</b> and <b>watered</b> <b>regularly</b>.",
+    "You can use the <b>hose</b> for <b>filling buckets</b> to <b>water the plants</b>.",
+    "When <b>helping visitors</b>, make sure they <b>follow the posted regulations</b>.",
+    "To <b>protect the environment</b>, <b>avoid</b> using <b>synthetic chemicals</b> <b>on plants</b>."
+  ],
+  vocab: [["greenhouse","/ˈɡriːnhaʊs/","温室"],["grow seedlings","/ɡroʊ ˈsiːdlɪŋz/","培育幼苗"],["food scraps","/fuːd skræps/","食物残渣"],["compost bin","/ˈkɑːmpoʊst bɪn/","堆肥箱"],["gardening tools","/ˈɡɑːrdnɪŋ tuːlz/","园艺工具"],["shovel","/ˈʃʌvl/","铲子"],["gloves","/ɡlʌvz/","手套"],["shed","/ʃed/","工具棚"],["raised bed","/reɪzd bed/","高架花坛（高畦）"],["weed","/wiːd/","除草；杂草"],["water (v.)","/ˈwɔːtər/","给……浇水"],["regularly","/ˈreɡjələrli/","定期地；经常地"],["hose","/hoʊz/","水管"],["fill buckets","/fɪl ˈbʌkɪts/","给水桶装水"],["water the plants","/ˈwɔːtər ðə plænts/","给植物浇水"],["help visitors","/help ˈvɪzɪtərz/","帮助游客"],["follow the posted regulations","/ˈfɑːloʊ ðə ˈpoʊstɪd ˌreɡjuˈleɪʃənz/","遵守张贴的规定"],["protect the environment","/prəˈtekt ði ɪnˈvaɪrənmənt/","保护环境"],["avoid doing sth.","/əˈvɔɪd ˈduːɪŋ/","避免做某事"],["synthetic chemicals","/sɪnˈθetɪk ˈkemɪklz/","合成化学品"],["on plants","/ɑːn plænts/","用于植物上"]]
+},
+
+// ===== 三、美食制作类 =====
+{
+  id: 10, cat: "cat3", title: "Making Coffee 制作咖啡", date: "2026-04-18", hasAudio: false, audioUrl: null,
+  sentences: [
+    "Make <b>a shot of espresso</b> with the machine.",
+    "<b>Steam</b> the milk until it's hot and <b>bubbling</b>.",
+    "<b>Pour</b> the coffee into the <b>appropriately sized</b> cup.",
+    "Slowly add the milk until the cup is about <b>halfway full</b>.",
+    "Use a <b>spoon</b> to create <b>latte art</b> if you know how to do it.",
+    "Ask the <b>customer</b> if they want <b>sugar or honey</b> before <b>serving</b>.",
+    "Place a small <b>chocolate</b> on the <b>saucer</b> next to the cup."
+  ],
+  vocab: [["espresso","/eˈspresoʊ/","意式浓缩咖啡"],["a shot of espresso","单份浓缩咖啡"],["steam","/stiːm/","蒸；打发"],["bubbling","/ˈbʌblɪŋ/","起泡的"],["pour","/pɔːr/","倒"],["appropriately sized","/əˈproʊpriətli saɪzd/","合适尺寸"],["halfway full","/ˌhæfˈweɪ fʊl/","半满"],["spoon","/spuːn/","勺子"],["latte art","/ˈlɑːteɪ ɑːrt/","拿铁拉花"],["customer","/ˈkʌstəmər/","顾客"],["sugar","/ˈʃʊɡər/","糖"],["honey","/ˈhʌni/","蜂蜜"],["saucer","/ˈsɔːsər/","杯碟"]]
+},
+{
+  id: 15, cat: "cat3", title: "Baking Cookies 烘焙曲奇", date: "2026-04-29", hasAudio: false, audioUrl: null,
+  sentences: [
+    "Begin by <b>mixing the butter and sugar</b>.",
+    "<b>Spread the dough</b> so the cookies <b>bake evenly</b>.",
+    "<b>Preheat the oven</b> to the <b>appropriate temperature</b>.",
+    "Evenly <b>space</b> the cookie shapes onto the <b>baking sheet</b>.",
+    "<b>Insert the tray</b> and bake until the <b>cookie edges</b> are golden.",
+    "After the <b>baking time</b> is complete, <b>cool the cookies on the rack</b> for 5 minutes.",
+    "<b>Pour yourself a glass of milk</b>, and enjoy cookies <b>fresh out of the oven</b>."
+  ],
+  vocab: [["mix the butter and sugar","/mɪks ðə ˈbʌtər ənd ˈʃʊɡər/","混合黄油与糖"],["spread the dough","/spred ðə doʊ/","擀开面团"],["bake evenly","/beɪk ˈiːvnli/","均匀烘烤"],["preheat the oven","/ˌpriːˈhiːt ði ˈʌvn/","预热烤箱"],["appropriate temperature","/əˈproʊpriət ˈtemprətʃər/","合适温度"],["baking sheet","/ˈbeɪkɪŋ ʃiːt/","烤盘"],["insert the tray","/ɪnˈsɜːrt ðə treɪ/","放入烤盘"],["cookie edges","/ˈkʊki ˈedʒɪz/","曲奇边缘"],["baking time","/ˈbeɪkɪŋ taɪm/","烘烤时间"],["cool on the rack","/kuːl ɑːn ðə ræk/","在冷却架上放凉"],["fresh out of the oven","/freʃ aʊt əv ði ˈʌvn/","刚出炉的"],["a glass of milk","/ə ɡlæs əv mɪlk/","一杯牛奶"]]
+},
+{
+  id: 16, cat: "cat3", title: "Making a Smoothie 制作奶昔", date: "2026-04-29", hasAudio: true, audioUrl: null,
+  sentences: [
+    "<b>Peel and slice a banana</b> to add <b>natural sweetness</b>.",
+    "Add fruits that <b>vary in color</b> to <b>increase vitamins</b>.",
+    "You can add <b>flavored yogurt</b> for <b>additional taste</b>.",
+    "Slowly add milk until you reach the <b>desired consistency</b>.",
+    "<b>Blend</b> until <b>no chunks remain</b> and everything is <b>mixed evenly</b>.",
+    "<b>Optionally</b>, add <b>a few pieces of ice</b> for a colder drink.",
+    "Once everything looks ready, <b>pour</b> the smoothie into a <b>chilled glass</b> and <b>serve</b>."
+  ],
+  vocab: [["peel and slice a banana","/piːl ənd slaɪs ə bəˈnænə/","剥皮切片香蕉"],["natural sweetness","/ˈnætʃrəl ˈswiːtnəs/","天然甜味"],["vary in color","/ˈveri ɪn ˈkʌlər/","颜色各异"],["increase vitamins","/ɪnˈkriːs ˈvaɪtəmɪnz/","补充维生素"],["flavored yogurt","/ˈfleɪvərd ˈjoʊɡərt/","风味酸奶"],["desired consistency","/dɪˈzaɪərd kənˈsɪstənsi/","理想浓稠度"],["blend","/blend/","搅打"],["no chunks remain","/noʊ tʃʌŋks rɪˈmeɪn/","无结块残留"],["mix evenly","/mɪks ˈiːvnli/","混合均匀"],["chilled glass","/tʃɪld ɡlæs/","冰镇杯"],["serve","/sɜːrv/","上桌"]]
+},
+{
+  id: 26, cat: "cat3", title: "Making a Salad 制作沙拉", date: "2026-05-21", hasAudio: true, audioUrl: null,
+  sentences: [
+    "Begin by washing the vegetables.",
+    "Carefully <b>chop</b> the <b>salad ingredients</b>.",
+    "Collect the chopped vegetables and place them together.",
+    "Slowly add the <b>dressing</b> so that the salad does not <b>get soggy</b>.",
+    "<b>Toss everything together</b> <b>thoroughly</b> so the <b>flavors</b> are mixed.",
+    "Put any <b>leftovers</b> in a <b>food container</b> and place them in the refrigerator later.",
+    "When you have finished, be sure to clean up, so the kitchen stays <b>neat and clean</b>."
+  ],
+  vocab: [["chop","/tʃɑːp/","切碎"],["salad ingredients","/ˈsæləd ɪnˈɡriːdiənts/","沙拉食材"],["dressing","/ˈdresɪŋ/","沙拉酱"],["get soggy","/ɡet ˈsɑːɡi/","变得湿软"],["toss everything together","/tɔːs ˈevriθɪŋ təˈɡeðər/","搅拌均匀"],["thoroughly","/ˈθɜːroʊli/","彻底地"],["flavors","/ˈfleɪvərz/","味道"],["leftovers","/ˈleftˌoʊvərz/","剩菜"],["food container","/fuːd kənˈteɪnər/","保鲜盒"],["neat and clean","/niːt ənd kliːn/","整洁干净"]]
+},
+{
+  id: 36, cat: "cat3", title: "Making a Salad 2 做沙拉 (第二套)", date: "2026-06-13", hasAudio: true, audioUrl: null, sentences: [
+    "(⚠️ 文章中的句子嵌在图片中，以下为已知词汇。句子待补充，请查看公众号原文。)",
+    "已知词汇：rinse 冲洗 / cutting board 砧板 / mixing bowl 搅拌碗 / dressing 沙拉酱 / get soggy 变软 / tongs 夹子 / toss 翻拌 / evenly 均匀地 / leftovers 剩余食物 / container 容器 / refrigerator 冰箱",
+    "本文为新版做沙拉，与 Topic 26 不同。两套都建议练熟。"
+  ],
+  vocab: [["rinse","/rɪns/","冲洗"],["sink","/sɪŋk/","水槽"],["cutting board","/ˈkʌtɪŋ bɔːrd/","砧板"],["chop","/tʃɑːp/","切碎"],["vegetables","/ˈvedʒtəbəlz/","蔬菜"],["mixing bowl","/ˈmɪksɪŋ boʊl/","搅拌碗"],["dressing","/ˈdresɪŋ/","沙拉酱"],["get soggy","/ɡet ˈsɑːɡi/","变软泡烂"],["tongs","/tɔːŋz/","夹子"],["toss","/tɔːs/","翻拌"],["ingredients","/ɪnˈɡriːdiənts/","食材"],["evenly","/ˈiːvənli/","均匀地"],["leftover food","/ˈleftˌoʊvər fuːd/","剩余食物"],["container","/kənˈteɪnər/","保鲜盒"],["refrigerator","/rɪˈfrɪdʒəreɪtər/","冰箱"],["wash the dishes","洗餐具"],["leave the sink area clean","保持水槽区域整洁"]]
+},
+
+// ===== 四、装修绘画艺术创作类 =====
+{
+  id: 14, cat: "cat4", title: "Flower Arrangement 插花", date: "2026-03-29", hasAudio: false, audioUrl: null,
+  sentences: [
+    "Cut <b>stems</b> <b>at an angle</b> using <b>shears</b>.",
+    "Place <b>pebbles</b> in the bottom for <b>support</b>.",
+    "Begin by placing the <b>taller flowers</b> in the center.",
+    "<b>Fill gaps</b> with smaller flowers to maintain the <b>visual balance</b>.",
+    "Add some <b>greenery</b> to <b>enhance the overall fullness</b>.",
+    "You need to change the water <b>regularly</b> to keep everything looking fresh.",
+    "Once you are happy with your <b>arrangement</b>, <b>decorate</b> it with a pretty <b>ribbon</b>."
+  ],
+  vocab: [["cut stems","/kʌt stemz/","剪花茎"],["at an angle","/æt æn ˈæŋɡl/","以一个角度"],["shears","/ʃɪrz/","花剪"],["pebbles","/ˈpeblz/","鹅卵石"],["support","/səˈpɔːrt/","支撑"],["taller flowers","/ˈtɔːlər ˈflaʊərz/","较高的花"],["fill gaps","/fɪl ɡæps/","填补空隙"],["visual balance","/ˈvɪʒuəl ˈbæləns/","视觉平衡"],["greenery","/ˈɡriːnəri/","绿叶"],["enhance fullness","/ɪnˈhæns ˈfʊlnəs/","增加饱满度"],["regularly","/ˈreɡjələrli/","定期地"],["arrangement","/əˈreɪndʒmənt/","插花作品"],["decorate","/ˈdekəreɪt/","装饰"],["ribbon","/ˈrɪbən/","丝带"]]
+},
+{
+  id: 17, cat: "cat4", title: "Painting Walls 刷墙", date: "2026-04-29", hasAudio: true, audioUrl: null,
+  sentences: [
+    "Use a <b>drop cloth</b> on the floor to prevent <b>stains</b>.",
+    "Apply <b>painter's tape</b> to edges for clean lines.",
+    "<b>Pour the paint</b> directly into the <b>tray</b> for easy access.",
+    "Use a <b>roller</b> for <b>even coverage</b> on large areas.",
+    "Start painting at the top of the wall and work steadily downward.",
+    "You might need to use an <b>extension ladder</b> to reach very <b>high spots</b> and corners.",
+    "For the best results, remember to <b>remove the tape</b> before the paint fully dries."
+  ],
+  vocab: [["drop cloth","/drɑːp klɔːθ/","防尘布"],["stains","/steɪnz/","污渍"],["painter's tape","/ˈpeɪntərz teɪp/","保护胶带"],["tray","/treɪ/","托盘"],["even coverage","/ˈiːvn ˈkʌvərɪdʒ/","均匀涂刷"],["extension ladder","/ɪkˈstenʃn ˈlædər/","伸缩梯"],["high spots","/haɪ spɑːts/","高处位置"],["remove the tape","/rɪˈmuːv ðə teɪp/","撕掉胶带"]]
+},
+{
+  id: 31, cat: "cat4", title: "Yoga Class 瑜伽课", date: "2026-06-05", hasAudio: true, audioUrl: null,
+  sentences: [
+    "Find a good place to <b>roll out your mat</b>.",
+    "Keep some water <b>handy</b> to drink when needed.",
+    "Focus on <b>slow breathing</b> to <b>stay relaxed</b> through each movement.",
+    "<b>Pay attention to</b> the instructor's words to learn <b>proper form</b>.",
+    "A <b>block</b> can help you <b>maintain your balance</b> while <b>holding poses</b>.",
+    "During <b>meditation</b>, use a <b>cushion</b> to help relax and <b>support your body</b>.",
+    "If you have questions about the positions, speak with the teacher after class."
+  ],
+  vocab: [["roll out your mat","/roʊl aʊt jʊr mæt/","铺开瑜伽垫"],["keep water handy","/kiːp ˈwɔːtər ˈhændi/","把水放在手边"],["slow breathing","/sloʊ ˈbriːðɪŋ/","缓慢呼吸"],["stay relaxed","/steɪ rɪˈlækst/","保持放松"],["pay attention to","/peɪ əˈtenʃn tuː/","注意"],["proper form","/ˈprɑːpər fɔːrm/","正确姿势"],["maintain balance","/meɪnˈteɪn ˈbæləns/","保持平衡"],["holding poses","/ˈhoʊldɪŋ ˈpoʊzɪz/","保持体式"],["meditation","/ˌmedɪˈteɪʃn/","冥想"],["cushion","/ˈkʊʃn/","垫子"],["support your body","/səˈpɔːrt jʊr ˈbɑːdi/","支撑身体"]]
+},
+{
+  id: 33, cat: "cat4", title: "Watercolor Painting 水彩画", date: "2026-06 (考后更新)", hasAudio: true, audioUrl: null,
+  sentences: [
+    "First, help the children <b>wet their paper</b> with a <b>clean brush</b>.",
+    "<b>Dip the brush into water</b>, then gently <b>load it with color</b>.",
+    "For the sky, use long <b>horizontal strokes</b> across the <b>damp paper</b>.",
+    "If the paint looks too dark, have them <b>rinse the brush</b> and try again.",
+    "<b>Demonstrate</b> how to clean the brush before <b>switching to a different color</b>.",
+    "Encourage them to <b>experiment</b>, because <b>watercolor is very forgiving</b> and mistakes often become <b>happy accidents</b>.",
+    "Once the <b>first layer</b> is <b>completely dry</b>, they can <b>add details</b> using a <b>smaller brush</b> and a technique called <b>dry brush</b>."
+  ],
+  vocab: [["watercolor painting","/ˈwɔːtərkʌlər ˈpeɪntɪŋ/","水彩画"],["wet the paper","/wet ðə ˈpeɪpər/","润湿画纸"],["clean brush","/kliːn brʌʃ/","干净画笔"],["dip into water","蘸入水中"],["load with color","蘸取颜料"],["horizontal strokes","/ˌhɔːrɪˈzɑːntl stroʊks/","横向笔触"],["damp paper","/dæmp ˈpeɪpər/","湿润画纸"],["rinse the brush","/rɪns ðə brʌʃ/","冲洗画笔"],["switch to a different color","更换颜色"],["demonstrate","/ˈdemənstreɪt/","示范"],["experiment","/ɪkˈsperɪmənt/","尝试"],["forgiving","/fərˈɡɪvɪŋ/","容错率高的"],["happy accidents","/ˈhæpi ˈæksɪdənts/","意外之喜"],["first layer","/fɜːrst ˈleɪər/","第一层"],["completely dry","/kəmˈpliːtli draɪ/","完全干透"],["add details","添加细节"],["dry brush","/draɪ brʌʃ/","干笔法"]]
+},
+{
+  id: 34, cat: "cat4", title: "Making a Pottery Bowl 做陶碗", date: "2026-06-13", hasAudio: true, audioUrl: null,
+  sentences: [
+    "First, wet your hands to keep the <b>clay moist</b>.",
+    "You will be using the center of the <b>wheel</b>.",
+    "Use your <b>thumbs</b> to gently open the clay in the middle.",
+    "<b>Smooth the surface</b> every few minutes with a <b>damp sponge</b>.",
+    "<b>Remove excess clay</b> to give the bowl a <b>clean shape</b>.",
+    "Once everything looks good, let the <b>finished piece dry on a rack</b> for a full day.",
+    "Remember that <b>practice is key to mastering pottery</b>, so <b>keep at it</b>."
+  ],
+  vocab: [["pottery","/ˈpɑːtəri/","陶艺"],["pottery wheel","/ˈpɑːtəri wiːl/","陶轮"],["clay","/kleɪ/","陶土"],["keep the clay moist","/kiːp ðə kleɪ mɔɪst/","保持陶土湿润"],["thumb","/θʌm/","拇指"],["gently open the clay","轻轻撑开陶土"],["smooth the surface","/smuːð ðə ˈsɜːrfɪs/","抹平表面"],["damp sponge","/dæmp spʌndʒ/","湿海绵"],["remove excess clay","去除多余陶土"],["dry on a rack","/draɪ ɑːn ə ræk/","放在架子上晾干"],["practice is key","练习是关键"],["keep at it","/kiːp æt ɪt/","坚持"]]
+},
+{
+  id: 35, cat: "cat4", title: "Art Gallery 美术馆", date: "2026-06-13", hasAudio: true, audioUrl: null,
+  sentences: [
+    "Visitors should enter through the front.",
+    "Tickets can be <b>purchased</b> at <b>reception</b>.",
+    "You can leave your <b>belongings</b> in the <b>coat checkroom</b> <b>free of charge</b>.",
+    "Each <b>piece</b> in the <b>Modern Art Hall</b> is <b>labeled with details</b>.",
+    "Our <b>photography exhibit</b> features work by student artists.",
+    "<b>Restrooms</b> are located in the corner of the gallery near the <b>exit</b>.",
+    "Our <b>café</b> offers coffee, tea, and <b>a variety of</b> <b>sandwiches and treats</b>."
+  ],
+  vocab: [["art gallery","/ɑːrt ˈɡæləri/","美术馆"],["visitor","/ˈvɪzɪtər/","参观者"],["ticket","/ˈtɪkɪt/","门票"],["purchase","/ˈpɜːrtʃəs/","购买"],["reception","/rɪˈsepʃən/","前台"],["belongings","/bɪˈlɔːŋɪŋz/","随身物品"],["coat checkroom","/koʊt tʃek ruːm/","衣物寄存处"],["free of charge","/friː əv tʃɑːrdʒ/","免费"],["Modern Art Hall","现代艺术展厅"],["photography exhibit","/fəˈtɑːɡrəfi ɪɡˈzɪbɪt/","摄影展"],["restroom","/ˈrestruːm/","洗手间"],["exit","/ˈeksɪt/","出口"],["café","/kæˈfeɪ/","咖啡馆"],["sandwiches and treats","三明治和小点心"]]
+},
+{
+  id: 37, cat: "cat4", title: "Watercolor Painting 2 水彩画 (第二套)", date: "2026-06-21", hasAudio: true, audioUrl: null,
+  sentences: [
+    "<b>Lightly wet your brush</b> before starting to paint.",
+    "<b>Add a small bit of color</b> to your brush.",
+    "<b>Mix two or more paints</b> to create additional colors.",
+    "<b>Apply thin layers</b> to keep the paper from <b>tearing</b>.",
+    "Use a <b>smaller brush</b> to add <b>fine details</b> to the picture.",
+    "If a section looks too wet, <b>blot it gently</b> to pick up any <b>excess paint</b>.",
+    "When the painting is finished, blow <b>warm air</b> on it for moving or storing it."
+  ],
+  vocab: [["watercolor painting","/ˈwɔːtərˌkʌlər ˈpeɪntɪŋ/","水彩画"],["lightly wet your brush","/ˈlaɪtli wet jʊr brʌʃ/","轻轻润湿画笔"],["add a small bit of color","蘸取少量颜料"],["mix two or more colors","混合两种以上颜色"],["apply thin layers","/əˈplaɪ θɪn ˈleɪərz/","薄涂"],["tearing","/ˈterɪŋ/","破损"],["smaller brush","小号画笔"],["fine details","/faɪn ˈdiːteɪlz/","细节"],["blot gently","/blɑːt ˈdʒentli/","轻轻吸干"],["excess paint","/ɪkˈses peɪnt/","多余颜料"],["warm air","/ˌwɔːrm ˈer/","暖风"]]
+},
+
+// ===== 五、商业服务 & 休闲娱乐类 =====
+{
+  id: 9, cat: "cat5", title: "Travel Agency 旅行社", date: "2026-04-18", hasAudio: false, audioUrl: null,
+  sentences: [
+    "Welcome to the <b>travel agency</b>.",
+    "We offer <b>travel packages</b> for many <b>destinations</b>.",
+    "You can ask about <b>flights, hotels, and tour plans</b>.",
+    "Our <b>staff</b> can help you choose the best <b>option</b>.",
+    "Please provide your <b>travel dates</b> when <b>booking a trip</b>.",
+    "Some packages include <b>transportation</b> and <b>guided tours</b>.",
+    "For more details, speak with an <b>agent at the desk</b>."
+  ],
+  vocab: [["travel agency","/ˈtrævl ˈeɪdʒənsi/","旅行社"],["travel package","/ˈtrævl ˈpækɪdʒ/","旅游套餐"],["destination","/ˌdestɪˈneɪʃn/","目的地"],["flight","/flaɪt/","航班"],["hotel","/hoʊˈtel/","酒店"],["tour plan","/tʊr plæn/","旅行计划"],["staff","/stæf/","工作人员"],["option","/ˈɑːpʃn/","选择"],["travel date","/ˈtrævl deɪt/","出行日期"],["book a trip","/bʊk ə trɪp/","预订旅行"],["transportation","/ˌtrænspɔːrˈteɪʃn/","交通"],["guided tour","/ˌɡaɪdɪd tʊr/","导游行程"],["agent","/ˈeɪdʒənt/","业务员"]]
+},
+{
+  id: 27, cat: "cat5", title: "Travel Agency 2 旅行社 (第二套)", date: "2026-04-18 / 05-24", hasAudio: true, audioUrl: null,
+  sentences: [
+    "Start with the customer's <b>travel dates</b>.",
+    "Suggest <b>flights</b> that match their traveling times.",
+    "<b>Propose lodgings</b> that fit their <b>budget</b> and are close to <b>attractions</b>.",
+    "Offer <b>travel insurance</b> options to give clients <b>peace of mind</b>.",
+    "Recommend <b>guided tours</b> that <b>highlight</b> the local culture.",
+    "Before booking the <b>reservation</b>, <b>go over the details</b> with the client.",
+    "When customers are ready to pay, <b>process the payment</b> to confirm their <b>booking</b>."
+  ],
+  vocab: [["travel dates","/ˈtrævl deɪts/","出行日期"],["flight","/flaɪt/","航班"],["propose lodgings","/prəˈpoʊz ˈlɒdʒɪŋz/","推荐住宿"],["budget","/ˈbʌdʒɪt/","预算"],["attraction","/əˈtrækʃn/","景点"],["travel insurance","/ˈtrævl ɪnˈʃʊərəns/","旅行保险"],["peace of mind","/piːs əv maɪnd/","安心"],["guided tour","/ˈɡaɪdɪd tʊə(r)/","导游行程"],["highlight","/ˈhaɪlaɪt/","突出体现"],["reservation","/ˌrezəˈveɪʃn/","预订"],["go over details","核对细节"],["process payment","办理付款"],["booking","/ˈbʊkɪŋ/","预订"]]
+},
+{
+  id: 28, cat: "cat5", title: "Amusement Park 游乐园", date: "2026-05-29", hasAudio: true, audioUrl: null,
+  sentences: [
+    "The <b>rollercoasters</b> offer a <b>thrilling</b> time.",
+    "<b>Water rides</b> provide a chance to <b>cool off</b>.",
+    "There are <b>special opportunities</b> for any <b>young guests</b>.",
+    "Over here is the <b>food court</b> with many <b>dining options</b>.",
+    "The <b>souvenir store</b> sells <b>park-themed merchandise</b> for your <b>shopping needs</b>.",
+    "For more information, <b>park maps</b> and <b>schedules</b> are available at the <b>entrance</b>.",
+    "If you're looking for more, check the map for <b>ride locations</b> and <b>visitor amenities</b>."
+  ],
+  vocab: [["rollercoaster","/ˈroʊ.lɚˌkoʊ.stɚ/","过山车"],["thrilling","/ˈθrɪlɪŋ/","惊险刺激的"],["water rides","/ˈwɔːtɚ raɪdz/","水上游乐设施"],["cool off","/kuːl ɔːf/","消暑"],["special opportunities","特别活动"],["young guests","/jʌŋ ɡests/","年幼游客"],["food court","/fuːd kɔːrt/","美食广场"],["dining options","/ˈdaɪnɪŋ ˈɑːpʃnz/","餐饮选择"],["souvenir store","/ˌsuː.vəˈnɪr stɔːr/","纪念品商店"],["park-themed merchandise","乐园主题商品"],["park maps","乐园地图"],["schedules","/ˈskedʒ.uːlz/","时间表"],["entrance","/ˈentrəns/","入口"],["ride locations","游乐设施位置"],["visitor amenities","/ˈvɪzɪtɚ əˈmen.ə.tiz/","游客服务设施"]]
+},
+{
+  id: 29, cat: "cat5", title: "Clothing Store 服装店", date: "2026-05-30", hasAudio: true, audioUrl: null,
+  sentences: [
+    "The <b>Women's Clothing Section</b> is this way.",
+    "Our <b>men's corner</b> has shirts, trousers and jackets.",
+    "Our <b>accessories</b> are <b>on display</b> near the <b>entrance</b>.",
+    "<b>Fitting rooms</b> are <b>available</b> here for <b>trying on clothes</b>.",
+    "The <b>checkout</b> for <b>payment</b> is by the <b>exit</b> when you're ready.",
+    "Ask the <b>store associates</b> if you need help <b>locating specific items</b>.",
+    "If you <b>get lost</b>, check the <b>store map</b> for the <b>layout</b> and location of <b>departments</b>."
+  ],
+  vocab: [["Women's Clothing Section","/ˈwɪmɪnz ˈkloʊðɪŋ ˈsekʃn/","女装区"],["men's corner","/ˈmenz ˈkɔːrnər/","男装专区"],["accessories","/əkˈsesəriz/","配饰"],["on display","/ɑːn dɪˈspleɪ/","陈列"],["entrance","/ˈentrəns/","入口"],["fitting rooms","/ˈfɪtɪŋ ruːmz/","试衣间"],["try on clothes","/traɪ ɑːn kloʊðz/","试穿衣服"],["checkout","/ˈtʃɛkaʊt/","收银台"],["payment","/ˈpeɪmənt/","付款"],["store associates","/stɔːr əˈsoʊsieɪts/","导购"],["locate specific items","找到特定商品"],["get lost","/ɡet lɔːst/","迷路"],["store map","/stɔːr mæp/","店内平面图"],["layout","/ˈleɪaʊt/","布局"],["departments","/dɪˈpɑːrtmənts/","区域"]]
+}
+];
+
+// ===== RENDER =====
+const catNames = { cat1: "🏫 校园行政办事", cat2: "🌿 手工园艺户外", cat3: "🍳 美食制作", cat4: "🎨 装修绘画艺术", cat5: "🏪 商业休闲" };
+let currentCat = "all";
+
+function buildSentencesHTML(t) {
+  let html = '<div class="sentences">';
+  // Skip placeholder-only topics
+  let hasRealSentences = t.sentences.some(s => s.indexOf('⚠️') !== 0);
+  if (!hasRealSentences) {
+    t.sentences.forEach(s => { html += '<p style="color:var(--text-secondary);font-size:0.85rem;padding:4px 0">'+s+'</p>'; });
+    html += '</div>';
+    return html;
+  }
+  html += '<button class="hide-all-btn" onclick="resetAllText(this)" style="margin-bottom:12px">🙈 全部隐藏（盲听模式）</button>';
+  t.sentences.forEach((s, i) => {
+    if (s.indexOf('⚠️') === 0) {
+      html += '<p style="color:var(--text-secondary);font-size:0.85rem;padding:4px 0">'+s+'</p>';
+      return;
+    }
+    html += '<div class="sentence">';
+    html += '<span class="sentence-num">'+(i+1)+'</span>';
+    let safeText = s.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    html += '<span class="sentence-text sentence-text-blur" onclick="revealText(this)">'+s+'</span>';
+    html += '<button class="sentence-tts" data-text="'+safeText+'" onclick="speakSentence(this)" title="AI语音朗读">🔊</button>';
+    html += '</div>';
+  });
+  html += '</div>';
+  return html;
+}
+
+function buildVocabHTML(t) {
+  if (!t.vocab || t.vocab.length === 0) return '';
+  let items = t.vocab.map(v => {
+    let en = v[0], phonetic = v[1] || '', cn = v[2] || '';
+    return '<div class="vocab-item"><span class="vocab-en">'+en+'</span>'+(phonetic?' <span class="vocab-phonetic">'+phonetic+'</span>':'')+' <span class="vocab-cn">'+cn+'</span></div>';
+  }).join('');
+  return '<div class="vocab-section"><span class="vocab-toggle" onclick="toggleVocab(this)">📖 展开词汇表 ('+t.vocab.length+'词)</span><div class="vocab-list">'+items+'</div></div>';
+}
+
+function buildCard(t) {
+  let catLabel = catNames[t.cat] || "";
+  let audioBadge = t.hasAudio ? '<span class="badge badge-audio">🔊 有音频</span>' : '<span class="badge badge-no-audio">📄 仅文字</span>';
+  let idLabel = typeof t.id === 'string' ? '#'+t.id.replace('b','')+'b' : '#'+t.id;
+  return '<div class="topic-card" data-cat="'+t.cat+'" data-has-audio="'+t.hasAudio+'" data-id="'+t.id+'">'+
+    '<div class="topic-header" onclick="toggleTopic(this)">'+
+      '<span class="topic-number">'+idLabel+'</span>'+
+      '<div class="topic-info">'+
+        '<div class="topic-title">'+t.title+'</div>'+
+        '<div class="topic-date">📅 '+t.date+'</div>'+
+      '</div>'+
+      '<div class="topic-badges">'+
+        audioBadge+
+        '<span class="badge badge-cat">'+catLabel+'</span>'+
+      '</div>'+
+      '<span class="topic-arrow">▾</span>'+
+    '</div>'+
+    '<div class="topic-body">'+
+      buildSentencesHTML(t)+
+      buildVocabHTML(t)+
+    '</div>'+
+  '</div>';
+}
+
+function renderAll() {
+  let html = '';
+  topics.forEach(t => { html += buildCard(t); });
+  document.getElementById('topicList').innerHTML = html;
+  updateStats();
+}
+
+function updateStats() {
+  let visible = document.querySelectorAll('.topic-card:not([style*="display: none"])');
+  let all = topics.length;
+  let withAudio = topics.filter(t => t.hasAudio).length;
+  let textOnly = all - withAudio;
+  let totalSentences = topics.reduce((sum, t) => sum + (t.sentences ? t.sentences.filter(s => s.indexOf('⚠️') === -1).length : 0), 0);
+  document.getElementById('count-all').textContent = all;
+  document.getElementById('count-audio').textContent = withAudio;
+  document.getElementById('count-text').textContent = textOnly;
+  document.getElementById('count-sentences').textContent = totalSentences;
+}
+
+function toggleTopic(header) {
+  header.parentElement.classList.toggle('open');
+}
+
+function toggleVocab(el) {
+  let list = el.nextElementSibling;
+  list.classList.toggle('show');
+  el.textContent = list.classList.contains('show') ? '📖 收起词汇表' : el.textContent.replace('收起', '展开');
+}
+
+function filterByCat(cat, btn) {
+  currentCat = cat;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  let cards = document.querySelectorAll('.topic-card');
+  cards.forEach(c => {
+    if (cat === 'all' || c.dataset.cat === cat) {
+      c.style.display = '';
+    } else {
+      c.style.display = 'none';
+    }
+  });
+  filterTopics(); // also apply search
+}
+
+function filterTopics() {
+  let query = document.getElementById('searchBox').value.toLowerCase().trim();
+  let cards = document.querySelectorAll('.topic-card');
+  let found = false;
+  cards.forEach(c => {
+    // Check category filter
+    if (currentCat !== 'all' && c.dataset.cat !== currentCat) {
+      c.style.display = 'none';
+      return;
+    }
+    if (!query) { c.style.display = ''; found = true; return; }
+    let cardText = c.textContent.toLowerCase();
+    if (cardText.includes(query)) { c.style.display = ''; found = true; }
+    else { c.style.display = 'none'; }
+  });
+  document.getElementById('noResults').classList.toggle('show', !found);
+  updateStats();
+}
+
+function revealText(el) {
+  el.classList.add('revealed');
+}
+
+function resetAllText(btn) {
+  let card = btn.closest('.topic-body');
+  card.querySelectorAll('.sentence-text-blur.revealed').forEach(el => el.classList.remove('revealed'));
+}
+
+renderAll();
+
+// TTS (Text-to-Speech) — Web Speech API
+let currentTTS = null;
+function speakSentence(btn) {
+  // Stop any currently playing TTS
+  if (currentTTS) {
+    speechSynthesis.cancel();
+    document.querySelectorAll('.sentence-tts.playing').forEach(b => b.classList.remove('playing'));
+    if (currentTTS === btn) { currentTTS = null; return; }
+  }
+  let raw = btn.getAttribute('data-text');
+  let clean = raw.replace(/<[^>]*>/g, '').trim();
+  // Skip placeholder sentences
+  if (clean.indexOf('⚠️') === 0) return;
+  let u = new SpeechSynthesisUtterance(clean);
+  u.lang = 'en-US';
+  u.rate = 0.85;
+  u.pitch = 1.0;
+  btn.classList.add('playing');
+  currentTTS = btn;
+  u.onend = u.onerror = () => {
+    btn.classList.remove('playing');
+    currentTTS = null;
+  };
+  speechSynthesis.speak(u);
+}
+</script>
+</body>
+</html>
